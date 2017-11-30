@@ -1,5 +1,9 @@
 package cas;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
@@ -8,6 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by ilya on 04.05.2017.
  */
 public class FibEntry {
+
     public static void main(String[] args) throws InterruptedException {
         ExecutorService es = Executors.newFixedThreadPool(3);
         FibLongCAS fb = new FibLongCAS();
@@ -76,7 +81,8 @@ public class FibEntry {
                 next = one + another;
 
                 anotherIsBigger = one < another;
-            } while (!(anotherIsBigger ? oneAtomic.compareAndSet(one, next) : anotherAtomic.compareAndSet(another, next)));
+            }
+            while (!(anotherIsBigger ? oneAtomic.compareAndSet(one, next) : anotherAtomic.compareAndSet(another, next)));
             return next;
         }
 
@@ -126,3 +132,25 @@ public class FibEntry {
     }
 
 }
+
+class A {
+
+    public List foo(List<String> test) throws Exception {
+        return null;
+    }
+
+    static void doSome() {
+        B b = (B) new A();
+        b.foo(Collections.emptyList());
+    }
+
+}
+
+class B extends A {
+
+    @Override
+    public ArrayList foo(List<String> n) {
+        return null;
+    }
+}
+

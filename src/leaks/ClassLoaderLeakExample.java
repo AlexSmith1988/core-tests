@@ -64,7 +64,7 @@ public final class ClassLoaderLeakExample {
   
   /**
    * A simple ClassLoader implementation that is only able to load one
-   * class, the LoadedInChildClassLoader class. We have to jump through
+   * class, the ObjectToBeLoadedByCustomClassLoader class. We have to jump through
    * some hoops here because we explicitly want to ensure we get a new
    * class each time (instead of reusing the class loaded by the system
    * class loader). If this child class were in a JAR file that wasn't
@@ -81,7 +81,7 @@ public final class ClassLoaderLeakExample {
         return super.loadClass(name, resolve);
       }
       try {
-        Path path = Paths.get("c:\\dev\\play\\demo1\\core-tests\\out\\production\\core-tests\\leaks\\","ClassLoaderLeakExample$LoadedInChildClassLoader"
+        Path path = Paths.get("c:\\dev\\play\\demo1\\core-tests\\out\\production\\core-tests\\leaks\\","ClassLoaderLeakExample$ObjectToBeLoadedByCustomClassLoader"
             + ".class");
         byte[] classBytes = Files.readAllBytes(path);
         Class<?> c = defineClass(name, classBytes, 0, classBytes.length);
