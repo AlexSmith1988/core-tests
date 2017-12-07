@@ -1,5 +1,6 @@
 package practice;
 
+import com.sun.javafx.fxml.expression.Expression;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,7 +33,9 @@ interface Source {
 }
 
 class Sequencer {
-    private static final short FIVE_BITS_MASK = (byte) (1 << 5) - 1;
+    private static final short TOKEN_SIZE = 5;
+
+    private static final short FIVE_BITS_MASK = (byte) (1 << TOKEN_SIZE) - 1;
 
     public static final short NO_MORE_CHUNKS = FIVE_BITS_MASK + 1;
 
@@ -56,8 +59,8 @@ class Sequencer {
 
     private short get() {
         byte token = (byte) ((current >> offset) & FIVE_BITS_MASK);
-        int loaded = Math.min(8 - offset, 5);
-        int leftToLoad = 5 - loaded;
+        int loaded = Math.min(8 - offset, TOKEN_SIZE);
+        int leftToLoad = TOKEN_SIZE - loaded;
         offset += loaded;
         if (offset == 8 && !loadNextByte())
             return NO_MORE_CHUNKS;
