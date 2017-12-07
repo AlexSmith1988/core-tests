@@ -16,7 +16,9 @@ public class InvokeDynamicTest extends Rod
     public static void main(String[] args) throws Throwable {
         methodHandles();
 
-        Double d = 10;
+//        Double d = 10;
+
+        "123".substring(1,10);
 
 //        lambdaTest();
     }
