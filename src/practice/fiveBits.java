@@ -3,8 +3,6 @@ package practice;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -27,28 +25,35 @@ public class fiveBits {
         }, true);
 
 
-        long start = currentTimeMillis();
-        consume(new Source() {
+        Source source = new Source() {
 
             Random random = new Random();
-            int batchCountdown = 10000;
+            int batchCountdown = 1000;
 
-            int batchSize = 10000;
+            int batchSize = 1000000;
+            int preparedBatchAmount = 50;
             byte[] batch = new byte[batchSize];
-            short[] batchShort = new short[batchSize];
+            short[][] batchShort = new short[preparedBatchAmount][batchSize];
+
+            {
+                for (int j = 0; j < preparedBatchAmount; ++j) {
+                    random.nextBytes(batch);
+                    for (int i = 0; i < batchSize; ++i) {
+                        batchShort[j][i] = batch[i];
+                    }
+                }
+            }
 
             @Override
             public short[] get() {
                 if (--batchCountdown < 0)
                     return null;
 
-                random.nextBytes(batch);
-                for (int i = 0; i < batchSize; ++i) {
-                    batchShort[i] = batch[i];
-                }
-                return batchShort;
+                return batchShort[batchCountdown % preparedBatchAmount];
             }
-        }, false);
+        };
+        long start = currentTimeMillis();
+        consume(source, false);
         System.out.println(currentTimeMillis() - start + " ms");
     }
 
