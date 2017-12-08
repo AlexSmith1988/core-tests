@@ -1,6 +1,5 @@
 package practice;
 
-import com.sun.javafx.fxml.expression.Expression;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,7 +10,7 @@ public class fiveBits {
     public static void main(String[] args) {
 
         Sequencer sequencer = new Sequencer(new Source() {
-            short[] chunk = {(short) ((1 << 3) + (1 << 7)), 1, 1, 1};
+            short[] chunk = {(short) ((1 << 3) + (1 << 7)), 1, 255, 255, 254, 255, 255, 255, 254};
 
             @Override
             public short[] get() {
