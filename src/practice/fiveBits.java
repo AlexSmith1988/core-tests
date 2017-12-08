@@ -2,6 +2,12 @@ package practice;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Random;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+
+import static java.lang.System.currentTimeMillis;
+
 /**
  * Created by AIKuznetsov on 07.12.2017.
  */
@@ -9,8 +15,8 @@ public class fiveBits {
 
     public static void main(String[] args) {
 
-        Sequencer sequencer = new Sequencer(new Source() {
-            short[] chunk = {(short) ((1 << 3) + (1 << 7)), 1, 255, 255, 254, 255, 255, 255, 254};
+        consume(new Source() {
+            short[] chunk = {(short) ((1 << 3) + (1 << 7)), 1, 255, 255};
 
             @Override
             public short[] get() {
@@ -18,10 +24,39 @@ public class fiveBits {
                 chunk = null;
                 return result;
             }
-        });
+        }, true);
 
+
+        long start = currentTimeMillis();
+        consume(new Source() {
+
+            Random random = new Random();
+            int batchCountdown = 10000;
+
+            int batchSize = 10000;
+            byte[] batch = new byte[batchSize];
+            short[] batchShort = new short[batchSize];
+
+            @Override
+            public short[] get() {
+                if (--batchCountdown < 0)
+                    return null;
+
+                random.nextBytes(batch);
+                for (int i = 0; i < batchSize; ++i) {
+                    batchShort[i] = batch[i];
+                }
+                return batchShort;
+            }
+        }, false);
+        System.out.println(currentTimeMillis() - start + " ms");
+    }
+
+    private static void consume(Source source, boolean print) {
+        Sequencer sequencer = new Sequencer(source);
         for (short next = sequencer.getNext(); next != Sequencer.NO_MORE_CHUNKS; next = sequencer.getNext())
-            System.out.println(next);
+            if (print)
+                System.out.println(next);
     }
 
 
