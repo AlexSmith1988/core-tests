@@ -11,7 +11,7 @@ public class fiveBits {
     public static void main(String[] args) {
 
         Sequencer sequencer = new Sequencer(new Source() {
-            short[] chunk = {(short) ((1 << 3) + (1 << 7)), 1};
+            short[] chunk = {(short) ((1 << 3) + (1 << 7)), 1, 1, 1};
 
             @Override
             public short[] get() {
