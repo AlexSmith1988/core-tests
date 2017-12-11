@@ -1,6 +1,3 @@
-package practice;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
@@ -9,47 +6,29 @@ import static java.lang.System.currentTimeMillis;
 /**
  * Created by AIKuznetsov on 07.12.2017.
  */
-public class fiveBits {
+public class FiveBits {
 
     public static void main(String[] args) {
-
-        consume(new Source() {
-            short[] chunk = {(short) ((1 << 3) + (1 << 7)), 1, 255, 255};
-
-            @Override
-            public short[] get() {
-                short[] result = chunk;
-                chunk = null;
-                return result;
-            }
-        }, true);
-
-
         Source source = new Source() {
-
             Random random = new Random();
-            int batchCountdown = 1000;
 
-            int batchSize = 1000000;
-            int preparedBatchAmount = 50;
+            int batchSize = 100_000_000;
             byte[] batch = new byte[batchSize];
-            short[][] batchShort = new short[preparedBatchAmount][batchSize];
 
             {
-                for (int j = 0; j < preparedBatchAmount; ++j) {
-                    random.nextBytes(batch);
-                    for (int i = 0; i < batchSize; ++i) {
-                        batchShort[j][i] = batch[i];
-                    }
-                }
+                random.nextBytes(batch);
             }
 
             @Override
-            public short[] get() {
-                if (--batchCountdown < 0)
+            public byte[] get() {
+                if  (batch != null) {
+                    byte[] x = batch;
+                    batch = null;
+                    return x;
+                }
+                else {
                     return null;
-
-                return batchShort[batchCountdown % preparedBatchAmount];
+                }
             }
         };
         long start = currentTimeMillis();
@@ -68,7 +47,7 @@ public class fiveBits {
 }
 
 interface Source {
-    short[] get();
+    byte[] get();
 }
 
 class Sequencer {
@@ -81,13 +60,13 @@ class Sequencer {
     private final Source source;
     private final boolean empty;
 
-    private short[] chunk;
+    private byte[] chunk;
     private int position;
 
-    private short current;
+    private byte current;
     private short offset;
 
-    public Sequencer(@NotNull Source source) {
+    public Sequencer(Source source) {
         this.source = source;
         empty = !loadNextByte();
     }
@@ -96,7 +75,7 @@ class Sequencer {
         return empty ? NO_MORE_CHUNKS : get();
     }
 
-    private short get() {
+    private byte get() {
         byte token = (byte) ((current >> offset) & FIVE_BITS_MASK);
         int loaded = Math.min(8 - offset, TOKEN_SIZE);
         int leftToLoad = TOKEN_SIZE - loaded;
@@ -129,3 +108,7 @@ class Sequencer {
     }
 
 }
+ 
+ 
+
+
