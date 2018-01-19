@@ -1,5 +1,8 @@
 package newspeak.optionals;
 
+import java.util.Optional;
+import java.util.function.Function;
+
 import static java.util.Optional.ofNullable;
 
 /**
@@ -43,5 +46,15 @@ public class OptionalsTest {
                 .map(D::getT)
                 .map(T::doCalculation)
                 .ifPresent(System.out::println);
+
+        Optional<String> s = ofNullable("");
+        Optional<Integer> integer = s.map(str -> str.length());
+        Optional<String> s1 = s.map(Function.<String>identity());
+        Optional<Integer> integer1 = integer.map(Function.<Integer>identity());
+        Optional<String> s2 = s.flatMap(Optional::ofNullable);
+
+
     }
+
+
 }
