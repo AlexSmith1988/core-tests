@@ -6,41 +6,35 @@ import java.util.concurrent.Semaphore;
 /**
  * Created by ilya on 14.11.2016.
  */
-public class SemaphoreRunnable implements Runnable
-{
-  final Random rand = new Random();
-  final Semaphore available;
-  int num;
-  public SemaphoreRunnable(int num, Semaphore available)
-  {
-    this.num = num;
-    this.available=available;
-  }
-  public void run()
-  {
-      int time = rand.nextInt(5);
+public class SemaphoreRunnable implements Runnable {
+    final Random rand = new Random();
+    final Semaphore available;
+    int num;
 
-      try
-      {
+    public SemaphoreRunnable(int num, Semaphore available) {
+        this.num = num;
+        this.available = available;
+    }
 
-//          System.out.println("before aquire:" + num);
-          available.acquire();
+    public void run() {
+        int time = rand.nextInt(5);
 
-          System.out.println("Executing " +
-              "long-running action for " +
-              time + " seconds... #" + num);
+        try {
+            available.acquire();
 
-          Thread.sleep(time * 1000);
+            System.out.println("Executing " +
+                    "long-running action for " +
+                    time + " seconds... #" + num);
 
-          System.out.println("Done with #" +
-              num + "!");
+            Thread.sleep(time * 1000);
 
-          available.release();
-      }
-      catch (InterruptedException intEx)
-      {
-          intEx.printStackTrace();
-      }
-  }
+            System.out.println("Done with #" +
+                    num + "!");
+
+            available.release();
+        } catch (InterruptedException intEx) {
+            intEx.printStackTrace();
+        }
+    }
 
 }
